@@ -10,7 +10,7 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
-const {makeMoglets} = require('./Moglets')
+const {makeMoglets} = require('./moglets')
 const {deployContract, saveDeploymentInfo} = require('./deploy')
 
 const colorizeOptions = {
