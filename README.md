@@ -1,6 +1,9 @@
 # pixelz
 
-Pixelz is an example of how to _mint_ non-fungible tokens (NFTs) while storing the
+Pixelz is adapted from Minty.
+You can find Minty here: [minty](https://github.com/yusefnapora/minty)
+
+Minty is an example of how to _mint_ non-fungible tokens (NFTs) while storing the
 associated data on IPFS. You can also use Pixelz to pin your data on an IPFS pinning service such as [nft.storage](https://nft.storage) and [Pinata](https://pinata.cloud).
 
 ## Usage
@@ -27,7 +30,7 @@ To install and run Pixelz, you must have NPM installed. Windows is not currently
 1. Clone this repository and move into the `pixelz` directory:
 
     ```shell
-    git clone https://github.com/yusefnapora/pixelz
+    git clone https://github.com/DuhCompuder/Pixelz
     cd pixelz
     ```
 
