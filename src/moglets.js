@@ -23,24 +23,24 @@ const ipfsAddOptions = {
 }
 
 /**
- * Construct and asynchronously initialize a new Minty instance.
- * @returns {Promise<Minty>} a new instance of Minty, ready to mint NFTs.
+ * Construct and asynchronously initialize a new Moglets instance.
+ * @returns {Promise<Moglets>} a new instance of Moglets, ready to mint NFTs.
  */
- async function MakeMinty() {
-    const m = new Minty()
+ async function MakeMoglets() {
+    const m = new Moglets()
     await m.init()
     return m
 }
 
 /**
- * Minty is the main object responsible for storing NFT data and interacting with the smart contract.
+ * Moglets is the main object responsible for storing NFT data and interacting with the smart contract.
  * Before constructing, make sure that the contract has been deployed and a deployment
- * info file exists (the default location is `minty-deployment.json`)
+ * info file exists (the default location is `moglets-deployment.json`)
  * 
- * Minty requires async initialization, so the Minty class (and its constructor) are not exported. 
- * To make one, use the async {@link MakeMinty} function.
+ * Moglets requires async initialization, so the Moglets class (and its constructor) are not exported. 
+ * To make one, use the async {@link MakeMoglets} function.
  */
-class Minty {
+class Moglets {
     constructor() {
         this.ipfs = null
         this.contract = null
@@ -54,8 +54,8 @@ class Minty {
         }
         this.hardhat = require('hardhat')
 
-        // The Minty object expects that the contract has already been deployed, with
-        // details written to a deployment info file. The default location is `./minty-deployment.json`,
+        // The Moglets object expects that the contract has already been deployed, with
+        // details written to a deployment info file. The default location is `./moglets-deployment.json`,
         // in the config.
         this.deployInfo = await loadDeploymentInfo()
 
@@ -454,7 +454,7 @@ class Minty {
      */
     async _configurePinningService() {
         if (!config.pinningService) {
-            throw new Error(`No pinningService set up in minty config. Unable to pin.`)
+            throw new Error(`No pinningService set up in moglets config. Unable to pin.`)
         }
 
         // check if the service has already been added to js-ipfs
@@ -535,5 +535,5 @@ function extractCID(cidOrURI) {
 //////////////////////////////////////////////
 
 module.exports = {
-    MakeMinty,
+    MakeMoglets,
 }
