@@ -20,7 +20,7 @@
 //   }
 // }
 
-// Moglets.sol
+// Pixelz.sol
 
 pragma solidity >=0.7.0;
 
@@ -31,12 +31,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-contract Moglets is ERC721, Ownable {
+contract Pixelz is ERC721, Ownable {
     using SafeMath for uint256;
-    // This is the original provenance record of all Moglets in existence at the time.
+    // This is the original provenance record of all Pixelz in existence at the time.
     string public constant ORIGINAL_PROVENANCE = "04599dff4da3cfc3cf2397b8a97ba24bba2168dbc5556fe9225230b9349af8d6";
 
-    // Maximum amount of Moglets in existance. Ever.
+    // Maximum amount of Pixelz in existance. Ever.
     uint256 public constant MAX_MOGLET_SUPPLY = 10000;
 
     // The block in which the starting index was created.
@@ -52,15 +52,15 @@ contract Moglets is ERC721, Ownable {
     /**
     * @dev Gets current Moglet price based on current supply.
     */
-    function getMogletsMaxAmount() public view returns (uint256) {
-        require(totalSupply() < MAX_MOGLET_SUPPLY, "Sale has already ended, no more Moglets left to sell.");
+    function getPixelzMaxAmount() public view returns (uint256) {
+        require(totalSupply() < MAX_MOGLET_SUPPLY, "Sale has already ended, no more Pixelz left to sell.");
         return 20;
     }
 
     /**
-    * @dev Gets current Moglets price based on current supply.
+    * @dev Gets current Pixelz price based on current supply.
     */
-    function getMogletsPrice() public view returns (uint256) {
+    function getPixelzPrice() public view returns (uint256) {
         require(totalSupply() < MAX_MOGLET_SUPPLY, "Sale has already ended.");
 
         uint256 currentSupply = totalSupply();
@@ -85,18 +85,18 @@ contract Moglets is ERC721, Ownable {
     }
 
     /**
-    * @dev Mints yourself a Moglets. Or more. You do you.
+    * @dev Mints yourself a Pixelz. Or more. You do you.
     */
-    function mintAMoglet(uint256 numberOfMoglets) public payable {
+    function mintAMoglet(uint256 numberOfPixelz) public payable {
         // Some exceptions that need to be handled.
         require(totalSupply() < MAX_MOGLET_SUPPLY, "Sale has already ended.");
-        require(numberOfMoglets > 0, "You cannot mint 0 Moglets.");
-        require(numberOfMoglets <= getMogletsMaxAmount(), "You are not allowed to buy this many Moglets at once in this price tier.");
-        require(SafeMath.add(totalSupply(), numberOfMoglets) <= MAX_MOGLET_SUPPLY, "Exceeds maximum Moglets supply. Please try to mint less Moglets.");
-        require(SafeMath.mul(getMogletsPrice(), numberOfMoglets) == msg.value, "Amount of Ether sent is not correct.");
+        require(numberOfPixelz > 0, "You cannot mint 0 Pixelz.");
+        require(numberOfPixelz <= getPixelzMaxAmount(), "You are not allowed to buy this many Pixelz at once in this price tier.");
+        require(SafeMath.add(totalSupply(), numberOfPixelz) <= MAX_MOGLET_SUPPLY, "Exceeds maximum Pixelz supply. Please try to mint less Pixelz.");
+        require(SafeMath.mul(getPixelzPrice(), numberOfPixelz) == msg.value, "Amount of Ether sent is not correct.");
 
-        // Mint the amount of provided Moglets.
-        for (uint i = 0; i < numberOfMoglets; i++) {
+        // Mint the amount of provided Pixelz.
+        for (uint i = 0; i < numberOfPixelz; i++) {
             uint mintIndex = totalSupply();
             _safeMint(msg.sender, mintIndex);
         }

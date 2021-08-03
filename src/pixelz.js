@@ -23,24 +23,24 @@ const ipfsAddOptions = {
 }
 
 /**
- * Construct and asynchronously initialize a new Moglets instance.
- * @returns {Promise<Moglets>} a new instance of Moglets, ready to mint NFTs.
+ * Construct and asynchronously initialize a new Pixelz instance.
+ * @returns {Promise<Pixelz>} a new instance of Pixelz, ready to mint NFTs.
  */
- async function MakeMoglets() {
-    const m = new Moglets()
+ async function MakePixelz() {
+    const m = new Pixelz()
     await m.init()
     return m
 }
 
 /**
- * Moglets is the main object responsible for storing NFT data and interacting with the smart contract.
+ * Pixelz is the main object responsible for storing NFT data and interacting with the smart contract.
  * Before constructing, make sure that the contract has been deployed and a deployment
- * info file exists (the default location is `moglets-deployment.json`)
+ * info file exists (the default location is `pixelz-deployment.json`)
  * 
- * Moglets requires async initialization, so the Moglets class (and its constructor) are not exported. 
- * To make one, use the async {@link MakeMoglets} function.
+ * Pixelz requires async initialization, so the Pixelz class (and its constructor) are not exported. 
+ * To make one, use the async {@link MakePixelz} function.
  */
-class Moglets {
+class Pixelz {
     constructor() {
         this.ipfs = null
         this.contract = null
@@ -54,8 +54,8 @@ class Moglets {
         }
         this.hardhat = require('hardhat')
 
-        // The Moglets object expects that the contract has already been deployed, with
-        // details written to a deployment info file. The default location is `./moglets-deployment.json`,
+        // The Pixelz object expects that the contract has already been deployed, with
+        // details written to a deployment info file. The default location is `./pixelz-deployment.json`,
         // in the config.
         this.deployInfo = await loadDeploymentInfo()
 
@@ -454,7 +454,7 @@ class Moglets {
      */
     async _configurePinningService() {
         if (!config.pinningService) {
-            throw new Error(`No pinningService set up in moglets config. Unable to pin.`)
+            throw new Error(`No pinningService set up in pixelz config. Unable to pin.`)
         }
 
         // check if the service has already been added to js-ipfs
@@ -535,5 +535,5 @@ function extractCID(cidOrURI) {
 //////////////////////////////////////////////
 
 module.exports = {
-    MakeMoglets,
+    MakePixelz,
 }

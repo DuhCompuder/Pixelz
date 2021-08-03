@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// This file contains the main entry point for the command line `moglets` app, and the command line option parsing code.
-// See moglets.js for the core functionality.
+// This file contains the main entry point for the command line `pixelz` app, and the command line option parsing code.
+// See pixelz.js for the core functionality.
 
 const fs = require('fs/promises')
 const path = require('path')
@@ -10,7 +10,7 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
-const {makeMoglets} = require('./moglets')
+const {makePixelz} = require('./pixelz')
 const {deployContract, saveDeploymentInfo} = require('./deploy')
 
 const colorizeOptions = {
@@ -49,8 +49,8 @@ async function main() {
         .action(pinNFTData)
 
     program.command('deploy')
-        .description('deploy an instance of the Moglets NFT contract')
-        .option('-o, --output <deploy-file-path>', 'Path to write deployment info to', config.deploymentConfigFile || 'moglets-deployment.json')
+        .description('deploy an instance of the Pixelz NFT contract')
+        .option('-o, --output <deploy-file-path>', 'Path to write deployment info to', config.deploymentConfigFile || 'pixelz-deployment.json')
         .option('-n, --name <name>', 'The name of the token contract', 'Julep')
         .option('-s, --symbol <symbol>', 'A short symbol for the tokens in this contract', 'JLP')
         .action(deploy)
@@ -58,7 +58,7 @@ async function main() {
 
     // The hardhat and getconfig modules both expect to be running from the root directory of the project,
     // so we change the current directory to the parent dir of this script file to make things work
-    // even if you call moglets from elsewhere
+    // even if you call pixelz from elsewhere
     const rootDir = path.join(__dirname, '..')
     process.chdir(rootDir)
 
@@ -68,7 +68,7 @@ async function main() {
 // ---- command action functions
 
 async function createNFT(imagePath, options) {
-    const moglets = await MakeMoglets()
+    const pixelz = await MakePixelz()
 
     // prompt for missing details if not provided as cli args
     const answers = await promptForMissing(options, {
@@ -81,7 +81,7 @@ async function createNFT(imagePath, options) {
         }
     })
 
-    const nft = await moglets.createNFTFromAssetFile(imagePath, answers)
+    const nft = await pixelz.createNFTFromAssetFile(imagePath, answers)
     console.log('🌿 Minted a new NFT: ')
 
     alignOutput([
@@ -97,8 +97,8 @@ async function createNFT(imagePath, options) {
 
 async function getNFT(tokenId, options) {
     const { creationInfo: fetchCreationInfo } = options
-    const moglets = await MakeMoglets()
-    const nft = await moglets.getNFT(tokenId, {fetchCreationInfo})
+    const pixelz = await MakePixelz()
+    const nft = await pixelz.getNFT(tokenId, {fetchCreationInfo})
 
     const output = [
         ['Token ID:', chalk.green(nft.tokenId)],
@@ -119,15 +119,15 @@ async function getNFT(tokenId, options) {
 }
 
 async function transferNFT(tokenId, toAddress) {
-    const moglets = await MakeMoglets()
+    const pixelz = await MakePixelz()
 
-    await moglets.transferToken(tokenId, toAddress)
+    await pixelz.transferToken(tokenId, toAddress)
     console.log(`🌿 Transferred token ${chalk.green(tokenId)} to ${chalk.yellow(toAddress)}`)
 }
 
 async function pinNFTData(tokenId) {
-    const moglets = await MakeMoglets()
-    const {assetURI, metadataURI} = await moglets.pinTokenData(tokenId)
+    const pixelz = await MakePixelz()
+    const {assetURI, metadataURI} = await pixelz.pinTokenData(tokenId)
     console.log(`🌿 Pinned all data for token id ${chalk.green(tokenId)}`)
 }
 

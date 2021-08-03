@@ -1,13 +1,13 @@
 {
-  "name": "moglets",
+  "name": "pixelz",
   "version": "1.0.0",
   "description": "",
-  "main": "src/moglets.js",
+  "main": "src/pixelz.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "moglets": "src/index.js"
+    "pixelz": "src/index.js"
   },
   "keywords": [],
   "author": "",

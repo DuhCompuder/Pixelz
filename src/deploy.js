@@ -5,37 +5,37 @@ const inquirer = require('inquirer')
 const {BigNumber} = require('ethers')
 const config = require('getconfig')
 
-const CONTRACT_NAME = "Moglets"
+const CONTRACT_NAME = "Pixelz"
 
 async function deployContract(name, symbol) {
     const hardhat = require('hardhat')
     const network = hardhat.network.name
 
     console.log(`deploying contract for token ${name} (${symbol}) to network "${network}"...`)
-    const Moglets = await hardhat.ethers.getContractFactory(CONTRACT_NAME)
-    const moglets = await Moglets.deploy(name, symbol)
+    const Pixelz = await hardhat.ethers.getContractFactory(CONTRACT_NAME)
+    const pixelz = await Pixelz.deploy(name, symbol)
 
-    await moglets.deployed()
-    console.log(`deployed contract for token ${name} (${symbol}) to ${moglets.address} (network: ${network})`);
+    await pixelz.deployed()
+    console.log(`deployed contract for token ${name} (${symbol}) to ${pixelz.address} (network: ${network})`);
 
-    return deploymentInfo(hardhat, moglets)
+    return deploymentInfo(hardhat, pixelz)
 }
 
-function deploymentInfo(hardhat, moglets) {
+function deploymentInfo(hardhat, pixelz) {
     return {
         network: hardhat.network.name,
         contract: {
             name: CONTRACT_NAME,
-            address: moglets.address,
-            signerAddress: moglets.signer.address,
-            abi: moglets.interface.format(),
+            address: pixelz.address,
+            signerAddress: pixelz.signer.address,
+            abi: pixelz.interface.format(),
         },
     }
 }
 
 async function saveDeploymentInfo(info, filename = undefined) {
     if (!filename) {
-        filename = config.deploymentConfigFile || 'moglets-deployment.json'
+        filename = config.deploymentConfigFile || 'pixelz-deployment.json'
     }
     const exists = await fileExists(filename)
     if (exists) {
@@ -54,8 +54,8 @@ async function saveDeploymentInfo(info, filename = undefined) {
 async function loadDeploymentInfo() {
     let {deploymentConfigFile} = config
     if (!deploymentConfigFile) {
-        console.log('no deploymentConfigFile field found in moglets config. attempting to read from default path "./moglets-deployment.json"')
-        deploymentConfigFile = 'moglets-deployment.json'
+        console.log('no deploymentConfigFile field found in pixelz config. attempting to read from default path "./pixelz-deployment.json"')
+        deploymentConfigFile = 'pixelz-deployment.json'
     }
     const content = await fs.readFile(deploymentConfigFile, {encoding: 'utf8'})
     deployInfo = JSON.parse(content)
