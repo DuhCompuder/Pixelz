@@ -7,13 +7,13 @@ const config = require('getconfig')
 
 const CONTRACT_NAME = "Pixelz"
 
-async function deployContract(name, symbol) {
+async function deployContract(name, symbol, baseURI) {
     const hardhat = require('hardhat')
     const network = hardhat.network.name
 
-    console.log(`deploying contract for token ${name} (${symbol}) to network "${network}"...`)
+    console.log(`deploying contract for token ${name} (${symbol}) and base URI set to: ${baseURI} to network "${network}"...`) //changes
     const Pixelz = await hardhat.ethers.getContractFactory(CONTRACT_NAME)
-    const pixelz = await Pixelz.deploy(name, symbol)
+    const pixelz = await Pixelz.deploy(baseURI)
 
     await pixelz.deployed()
     console.log(`deployed contract for token ${name} (${symbol}) to ${pixelz.address} (network: ${network})`);

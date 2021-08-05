@@ -237,9 +237,115 @@ class Pixelz {
         return {metadata, metadataURI}
     }
 
+    // //////////////////////////////////////////////
+    // // --------- Smart contract interactions
+    // //////////////////////////////////////////////
+
+    // /**
+    //  * Create a new NFT token that references the given metadata CID, owned by the given address.
+    //  * 
+    //  * @param {string} ownerAddress - the ethereum address that should own the new token
+    //  * @param {string} metadataURI - IPFS URI for the NFT metadata that should be associated with this token
+    //  * @returns {Promise<string>} - the ID of the new token
+    //  */
+    //  async mintToken(ownerAddress, metadataURI) {
+    //     // the smart contract adds an ipfs:// prefix to all URIs, so make sure it doesn't get added twice
+    //     metadataURI = stripIpfsUriPrefix(metadataURI)
+
+    //     // Call the mintToken method to issue a new token to the given address
+    //     // This returns a transaction object, but the transaction hasn't been confirmed
+    //     // yet, so it doesn't have our token id.
+    //     const tx = await this.contract.mintToken(ownerAddress, metadataURI)
+
+    //     // The OpenZeppelin base ERC721 contract emits a Transfer event when a token is issued.
+    //     // tx.wait() will wait until a block containing our transaction has been mined and confirmed.
+    //     // The transaction receipt contains events emitted while processing the transaction.
+    //     const receipt = await tx.wait()
+    //     for (const event of receipt.events) {
+    //         if (event.event !== 'Transfer') {
+    //             console.log('ignoring unknown event type ', event.event)
+    //             continue
+    //         }
+    //         return event.args.tokenId.toString()
+    //     }
+
+    //     throw new Error('unable to get token id')
+    // }
+
+    // async transferToken(tokenId, toAddress) {
+    //     const fromAddress = await this.getTokenOwner(tokenId)
+
+    //     // because the base ERC721 contract has two overloaded versions of the safeTranferFrom function,
+    //     // we need to refer to it by its fully qualified name.
+    //     const tranferFn = this.contract['safeTransferFrom(address,address,uint256)']
+    //     const tx = await tranferFn(fromAddress, toAddress, tokenId)
+
+    //     // wait for the transaction to be finalized
+    //     await tx.wait()
+    // }
+
+    // /**
+    //  * @returns {Promise<string>} - the default signing address that should own new tokens, if no owner was specified.
+    //  */
+    // async defaultOwnerAddress() {
+    //     const signers = await this.hardhat.ethers.getSigners()
+    //     return signers[0].address
+    // }
+
+    // /**
+    //  * Get the address that owns the given token id.
+    //  * 
+    //  * @param {string} tokenId - the id of an existing token
+    //  * @returns {Promise<string>} - the ethereum address of the token owner. Fails if no token with the given id exists.
+    //  */
+    // async getTokenOwner(tokenId) {
+    //     return this.contract.ownerOf(tokenId)
+    // }
+
+    // /**
+    //  * Get historical information about the token.
+    //  * 
+    //  * @param {string} tokenId - the id of an existing token
+    //  * 
+    //  * @typedef {object} NFTCreationInfo
+    //  * @property {number} blockNumber - the block height at which the token was minted
+    //  * @property {string} creatorAddress - the ethereum address of the token's initial owner
+    //  * 
+    //  * @returns {Promise<NFTCreationInfo>}
+    //  */
+    // async getCreationInfo(tokenId) {
+    //     const filter = await this.contract.filters.Transfer(
+    //         null,
+    //         null,
+    //         BigNumber.from(tokenId)
+    //     )
+
+    //     const logs = await this.contract.queryFilter(filter)
+    //     const blockNumber = logs[0].blockNumber
+    //     const creatorAddress = logs[0].args.to
+    //     return {
+    //         blockNumber,
+    //         creatorAddress,
+    //     }
+    // }
+
     //////////////////////////////////////////////
-    // --------- Smart contract interactions
+    // --------- Modified Smart contract interactions
     //////////////////////////////////////////////
+
+        // get price for Pixels based on current supply
+        async getPixelzMaxAmount() {
+            const maxAmt = await this.contract.getPixelzMaxAmount()
+            return maxAmt;
+        }
+
+    // get price for Pixels based on current supply
+    async getPrice() {
+        const price = await this.contract.getPixelzPrice()
+        let priceInEth;
+        priceInEth = ( price / 18 ).toFixed(6);
+        return priceInEth;
+    }
 
     /**
      * Create a new NFT token that references the given metadata CID, owned by the given address.

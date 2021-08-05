@@ -51,8 +51,8 @@ async function main() {
     program.command('deploy')
         .description('deploy an instance of the Pixelz NFT contract')
         .option('-o, --output <deploy-file-path>', 'Path to write deployment info to', config.deploymentConfigFile || 'pixelz-deployment.json')
-        .option('-n, --name <name>', 'The name of the token contract', 'Julep')
-        .option('-s, --symbol <symbol>', 'A short symbol for the tokens in this contract', 'JLP')
+        .option('-n, --name <name>', 'The name of the token contract', 'Pixelz')
+        .option('-s, --symbol <symbol>', 'A short symbol for the tokens in this contract', 'PXLZ')
         .action(deploy)
 
 
