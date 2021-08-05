@@ -53,6 +53,7 @@ async function main() {
         .option('-o, --output <deploy-file-path>', 'Path to write deployment info to', config.deploymentConfigFile || 'pixelz-deployment.json')
         .option('-n, --name <name>', 'The name of the token contract', 'Pixelz')
         .option('-s, --symbol <symbol>', 'A short symbol for the tokens in this contract', 'PXLZ')
+        .option('-u, --baseURI <baseURI>', 'Set the initial baseURI', 'ipfs://')
         .action(deploy)
 
 
@@ -133,7 +134,7 @@ async function pinNFTData(tokenId) {
 
 async function deploy(options) {
     const filename = options.output
-    const info = await deployContract(options.name, options.symbol)
+    const info = await deployContract(options.name, options.symbol, options.baseURI)
     await saveDeploymentInfo(info, filename)
 }
 

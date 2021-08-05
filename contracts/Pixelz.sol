@@ -17,7 +17,7 @@ contract Pixelz is ERC721, Ownable {
     string public METADATA_PROVENANCE_HASH = "";
 
     // Truth.　
-    string public constant R = "You can be chubby and still be cute. Cuteness is Justice.";
+    string public constant R = "You can be pixelz and still be cute. Cuteness is Justice.";
 
     constructor(string memory baseURI) ERC721("Pixelz","PIXELZ")  {
         setBaseURI(baseURI);
@@ -80,7 +80,7 @@ contract Pixelz is ERC721, Ownable {
         }
     }
     
-   function adoptChubby(uint256 numPixelz) public payable {
+   function adoptPixelz(uint256 numPixelz) public payable {
         require(totalSupply() < MAX_PIXELZ, "Sale has already ended");
         require(numPixelz > 0 && numPixelz <= 20, "You can adopt minimum 1, maximum 20 pixelz");
         require(totalSupply().add(numPixelz) <= MAX_PIXELZ, "Exceeds MAX_PIXELZ");
