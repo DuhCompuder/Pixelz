@@ -333,40 +333,42 @@ class Pixelz {
     // --------- Modified Smart contract interactions
     //////////////////////////////////////////////
 
-        // get price for Pixels based on current supply
-        async getPixelzMaxAmount() {
-            const maxAmt = await this.contract.getPixelzMaxAmount()
-            return maxAmt;
-        }
+    /**
+     * Returns all user owned Pixelz NFTs by index
+     * 
+     * @param {string} ownerAddress - the ethereum address that owns Pixelz
+     * @returns {Promise<array>} - URIs of all pixelz owned
+     */
+    async getOwnedPixelz(ownerAddress) {
+        const tokensByIndex = await this.contract.tokensOfOwner(ownerAddress);
+        return tokensByIndex;
+    }
 
     // get price for Pixels based on current supply
-    async getPrice() {
-        const price = await this.contract.getPixelzPrice()
+    async fetchPriceOnSupply() {
+        const price = await this.contract.calculatePrice()
         let priceInEth;
         priceInEth = ( price / 18 ).toFixed(6);
         return priceInEth;
     }
 
-    /**
-     * Create a new NFT token that references the given metadata CID, owned by the given address.
-     * 
-     * @param {string} ownerAddress - the ethereum address that should own the new token
-     * @param {string} metadataURI - IPFS URI for the NFT metadata that should be associated with this token
-     * @returns {Promise<string>} - the ID of the new token
-     */
-    async mintToken(ownerAddress, metadataURI) {
-        // the smart contract adds an ipfs:// prefix to all URIs, so make sure it doesn't get added twice
-        metadataURI = stripIpfsUriPrefix(metadataURI)
+    // get price for Pixels based on token id
+    async fetchPriceOnTokenId(id) {
+        const price = await this.contract.calculatePriceForToken(id)
+        let priceInEth;
+        priceInEth = ( price / 18 ).toFixed(6);
+        return priceInEth;
+    }
 
-        // Call the mintToken method to issue a new token to the given address
-        // This returns a transaction object, but the transaction hasn't been confirmed
-        // yet, so it doesn't have our token id.
-        const tx = await this.contract.mintToken(ownerAddress, metadataURI)
+    // purchasing Pixelz with max number of 20
+    async purchasePixelzNFT(num) {
+        if (num > 20 || num < 1) {
+            throw 'Number must be between 1 to 20 inclusive';
+        }
+        const tx = await this.contract.adoptPixelz(num)
 
-        // The OpenZeppelin base ERC721 contract emits a Transfer event when a token is issued.
-        // tx.wait() will wait until a block containing our transaction has been mined and confirmed.
-        // The transaction receipt contains events emitted while processing the transaction.
         const receipt = await tx.wait()
+        
         for (const event of receipt.events) {
             if (event.event !== 'Transfer') {
                 console.log('ignoring unknown event type ', event.event)
@@ -433,6 +435,35 @@ class Pixelz {
             blockNumber,
             creatorAddress,
         }
+    }
+
+    //////////////////////////////////////////////
+    // --------- Owner Only Contract Functions
+    //////////////////////////////////////////////
+    
+    async setProvenanceHash(hash) {
+        const tx = await this.contract.setProvenanceHash(hash);
+        await tx.wait()
+    }
+    async setBaseURI(baseURI) {
+        const tx = await this.contract.setBaseURI(baseURI);
+        await tx.wait()
+    }
+    async startSale() {
+        const tx = await this.contract.startSale();
+        await tx.wait()
+    }
+    async pauseSale() {
+        const tx = await this.contract.pauseSale();
+        await tx.wait()
+    }
+    async withdrawAll() {
+        const tx = await this.contract.withdrawAll();
+        await tx.wait()
+    }
+    async reserveGiveaway(num) {
+        const tx = await this.contract.reserveGiveaway(num);
+        await tx.wait()
     }
 
     //////////////////////////////////////////////
