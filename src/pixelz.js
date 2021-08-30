@@ -366,7 +366,6 @@ class Pixelz {
             throw 'Number must be between 1 to 20 inclusive';
         }
         const tx = await this.contract.adoptPixelz(num)
-
         const receipt = await tx.wait()
         
         for (const event of receipt.events) {
