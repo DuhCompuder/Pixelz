@@ -10,12 +10,8 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
-<<<<<<< HEAD
-const {MakePixelz} = require('./pixelz')
-=======
-const pixelz = require('./pixelz')
->>>>>>> b963f0cc3ea834d3f0715e44b7c456b702e764b7
-const {deployContract, saveDeploymentInfo} = require('./deploy')
+const {makePixelz} = require('./pixelz')
+const {deployContract, saveDeploymentInfo} = require('../deploy')
 
 const colorizeOptions = {
     pretty: true,
@@ -41,15 +37,15 @@ async function main() {
         .command('adopt <image-path>')
         .description('adopt a new Pixelz nft')
         .option('-p, --pay <eth>', 'amount in eth')
-        .action(adoptPixelz)
+        .action(createNFT)
     program
         .command('start-sale')
         .description('Begin Pixelz sales')
-        .action(startSale)
+        .action(createNFT)
     program
         .command('pause-sale')
         .description('Pause Pixelz sales')
-        .action(stopSale)
+        .action(createNFT)
     // New Deploy
     program.command('deploy')
         .description('deploy an instance of the Pixelz NFT contract')
@@ -57,6 +53,38 @@ async function main() {
         .option('-u, --baseURI <baseURI>', 'Set the initial baseURI', 'ipfs://')
         .action(deploy)
     //Deploy New Commands // ----------------------------------------------------------------
+    program
+        .command('mint <image-path>')
+        .description('create a new NFT from an image file')
+        .option('-n, --name <name>', 'The name of the NFT')
+        .option('-d, --description <desc>', 'A description of the NFT')
+        .option('-o, --owner <address>', 'The ethereum address that should own the NFT.' +
+            'If not provided, defaults to the first signing address.')
+        .action(createNFT)
+
+    program.command('show <token-id>')
+        .description('get info about an NFT using its token ID')
+        .option('-c, --creation-info', 'include the creator address and block number the NFT was minted')
+        .action(getNFT)
+
+
+    program.command('transfer <token-id> <to-address>')
+        .description('transfer an NFT to a new owner')
+        .action(transferNFT)
+
+    program.command('pin <token-id>')
+        .description('"pin" the data for an NFT to a remote IPFS Pinning Service')
+        .action(pinNFTData)
+
+    // program.command('deploy')
+    //     .description('deploy an instance of the Pixelz NFT contract')
+    //     .option('-o, --output <deploy-file-path>', 'Path to write deployment info to', config.deploymentConfigFile || 'pixelz-deployment.json')
+    //     .option('-n, --name <name>', 'The name of the token contract', 'Pixelz')
+    //     .option('-s, --symbol <symbol>', 'A short symbol for the tokens in this contract', 'PXLZ')
+    //     .option('-u, --baseURI <baseURI>', 'Set the initial baseURI', 'ipfs://')
+    //     .action(deploy)
+    
+
 
     // The hardhat and getconfig modules both expect to be running from the root directory of the project,
     // so we change the current directory to the parent dir of this script file to make things work
@@ -67,20 +95,9 @@ async function main() {
     await program.parseAsync(process.argv)
 }
 // ---- additional command action functions
-async function startSale() {
-    console.log(`Starting the sale...`)
-    await pixelz.startSale();
-    
-}
-async function stopSale() {
-    console.log(`Pausing the sale...`)
-    await pixelz.pauseSale();
-}
-async function adoptPixelz() {
+async function beginSale() {
     const p
 }
-
-
 // ---- command action functions
 
 async function createNFT(imagePath, options) {
