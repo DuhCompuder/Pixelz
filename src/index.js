@@ -10,7 +10,7 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
-const {makePixelz} = require('./pixelz')
+const {MakePixelz} = require('./pixelz')
 const {deployContract, saveDeploymentInfo} = require('./deploy')
 
 const colorizeOptions = {
