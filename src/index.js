@@ -26,6 +26,20 @@ async function main() {
 
     // commands
     program
+    //Deploy
+        .command('adopt <image-path>')
+        .description('adopt a new Pixelz nft')
+        .option('-p, --pay <eth>', 'amount in eth')
+        .action(createNFT)
+    program
+        .command('start-sale')
+        .description('Begin Pixelz sales')
+        .action(createNFT)
+    program
+        .command('pause-sale')
+        .description('Pause Pixelz sales')
+        .action(createNFT)
+    program
         .command('mint <image-path>')
         .description('create a new NFT from an image file')
         .option('-n, --name <name>', 'The name of the NFT')
@@ -65,7 +79,10 @@ async function main() {
 
     await program.parseAsync(process.argv)
 }
-
+// ---- additional command action functions
+async function beginSale() {
+    const p
+}
 // ---- command action functions
 
 async function createNFT(imagePath, options) {
