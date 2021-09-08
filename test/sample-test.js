@@ -46,7 +46,25 @@ describe('Pixelz', function () {
     // console.log(saleStatus)
     let costOfPixelz = await contract.calculatePrice()
     let numPurchased = 1;
-    await contract.connect(addr1).adoptPixelz(numPurchased, {from: addr1.address, value: ethers.utils.parseUnits("0.02", 18) })
+    await contract.connect(addr1).adoptPixelz(numPurchased, {from: addr1.address, value: ethers.utils.parseUnits("0.02", 18) });
+    
+    let userOwned = await contract.balanceOf(addr1.address);
+    console.log("User owns this pixelz nft: ", userOwned)
+
+    await contract.connect(addr2).adoptPixelz(numPurchased, {from: addr2.address, value: ethers.utils.parseUnits("0.02", 18) });
+    
+    let user2Owned = await contract.balanceOf(addr2.address);
+    console.log("User owns this pixelz nft: ", user2Owned)
+
+    await contract.connect(addr3).adoptPixelz(numPurchased, {from: addr3.address, value: ethers.utils.parseUnits("0.02", 18) });
+    await contract.connect(addr3).adoptPixelz(numPurchased, {from: addr3.address, value: ethers.utils.parseUnits("0.02", 18) });
+
+    let user3Owned = await contract.balanceOf(addr3.address);
+    console.log("User owns this pixelz nft: ", user3Owned)
+
+    let tokenURI = await contract.tokenURI(1);
+    console.log("This pixelz nft's token URI: ", tokenURI)
+    expect(user3Owned.toString()).to.equal('2');
   });
 
   // try {
