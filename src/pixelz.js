@@ -99,7 +99,6 @@ class Pixelz {
      */
      async createNFTFromAssetData(content, options) {
         // assign or create a new directory to store all nft data to a server location
-        const { tokenId } = options
         const __dirname = './nft';
 
         if (!fs.existsSync(__dirname)){
@@ -175,6 +174,37 @@ class Pixelz {
     // // --------- Smart contract interactions
     // //////////////////////////////////////////////
     
+    //////////////////////////////////////////////
+    // --------- Modified Smart contract interactions
+    //////////////////////////////////////////////
+
+    /**
+     * Returns all user owned Pixelz NFTs by index
+     * 
+     * @param {string} ownerAddress - the ethereum address that owns Pixelz
+     * @returns {Promise<array>} - URIs of all pixelz owned
+     */
+     async getOwnedPixelz(ownerAddress) {
+        const tokensByIndex = await this.contract.tokensOfOwner(ownerAddress);
+        return tokensByIndex;
+    }
+
+    // get price for Pixels based on current supply
+    async fetchPriceOnSupply() {
+        const price = await this.contract.calculatePrice()
+        let priceInEth;
+        priceInEth = ( price / 18 ).toFixed(6);
+        return priceInEth;
+    }
+
+    // get price for Pixels based on token id
+    async fetchPriceOnTokenId(id) {
+        const price = await this.contract.calculatePriceForToken(id)
+        let priceInEth;
+        priceInEth = ( price / 18 ).toFixed(6);
+        return priceInEth;
+    }
+
     // purchasing Pixelz with max number of 20
     async purchasePixelzNFT(num) {
         if (num > 20 || num < 1) {
@@ -192,5 +222,92 @@ class Pixelz {
         }
 
         throw new Error('unable to get token id')
+    }
+///////////////////////////////////////////////////////////////////////////
+    async transferToken(tokenId, toAddress) {
+        const fromAddress = await this.getTokenOwner(tokenId)
+
+        // because the base ERC721 contract has two overloaded versions of the safeTranferFrom function,
+        // we need to refer to it by its fully qualified name.
+        const tranferFn = this.contract['safeTransferFrom(address,address,uint256)']
+        const tx = await tranferFn(fromAddress, toAddress, tokenId)
+
+        // wait for the transaction to be finalized
+        await tx.wait()
+    }
+
+    /**
+     * @returns {Promise<string>} - the default signing address that should own new tokens, if no owner was specified.
+     */
+    async defaultOwnerAddress() {
+        const signers = await this.hardhat.ethers.getSigners()
+        return signers[0].address
+    }
+
+    /**
+     * Get the address that owns the given token id.
+     * 
+     * @param {string} tokenId - the id of an existing token
+     * @returns {Promise<string>} - the ethereum address of the token owner. Fails if no token with the given id exists.
+     */
+    async getTokenOwner(tokenId) {
+        return this.contract.ownerOf(tokenId)
+    }
+
+    /**
+     * Get historical information about the token.
+     * 
+     * @param {string} tokenId - the id of an existing token
+     * 
+     * @typedef {object} NFTCreationInfo
+     * @property {number} blockNumber - the block height at which the token was minted
+     * @property {string} creatorAddress - the ethereum address of the token's initial owner
+     * 
+     * @returns {Promise<NFTCreationInfo>}
+     */
+    async getCreationInfo(tokenId) {
+        const filter = await this.contract.filters.Transfer(
+            null,
+            null,
+            BigNumber.from(tokenId)
+        )
+
+        const logs = await this.contract.queryFilter(filter)
+        const blockNumber = logs[0].blockNumber
+        const creatorAddress = logs[0].args.to
+        return {
+            blockNumber,
+            creatorAddress,
+        }
+    }
+
+    //////////////////////////////////////////////
+    // --------- Owner Only Contract Functions
+    //////////////////////////////////////////////
+    
+    async setProvenanceHash(hash) {
+        const tx = await this.contract.setProvenanceHash(hash);
+        await tx.wait()
+    }
+    async setBaseURI(baseURI) {
+        const tx = await this.contract.setBaseURI(baseURI);
+        await tx.wait()
+    }
+    async startSale() {
+        const tx = await this.contract.startSale();
+        await tx.wait()
+        //return "sale started"
+    }
+    async stopSale() {
+        const tx = await this.contract.pauseSale();
+        await tx.wait()
+    }
+    async withdrawAll() {
+        const tx = await this.contract.withdrawAll();
+        await tx.wait()
+    }
+    async reserveGiveaway(num) {
+        const tx = await this.contract.reserveGiveaway(num);
+        await tx.wait()
     }
 }
