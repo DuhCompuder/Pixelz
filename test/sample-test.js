@@ -57,7 +57,7 @@ describe('Pixelz', function () {
     console.log("User owns this pixelz nft: ", user2Owned)
 
     await contract.connect(addr3).adoptPixelz(numPurchased, {from: addr3.address, value: ethers.utils.parseUnits("0.02", 18) });
-    await contract.connect(addr3).adoptPixelz(numPurchased, {from: addr3.address, value: ethers.utils.parseUnits("0.02", 18) });
+    await contract.connect(addr3).adoptPixelz(numPurchased, {value: ethers.utils.parseUnits("0.02", 18) });
 
     let user3Owned = await contract.balanceOf(addr3.address);
     console.log("User owns this pixelz nft: ", user3Owned)

@@ -6,7 +6,7 @@ require("@nomiclabs/hardhat-waffle");
 module.exports = {
     solidity: "0.7.3",
 
-    defaultNetwork: 'localhost',
+    defaultNetwork: 'hardhat',
     networks: {
         hardhat: {},
         localhost: {},
