@@ -10,7 +10,9 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
+
 const pixelz = require('./pixelz')
+
 const {deployContract, saveDeploymentInfo} = require('./deploy')
 
 const colorizeOptions = {
@@ -73,7 +75,7 @@ async function stopSale() {
     await pixelz.pauseSale();
 }
 async function adoptPixelz() {
-    const p
+   
 }
 
 

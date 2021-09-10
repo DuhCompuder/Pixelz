@@ -117,10 +117,8 @@ class Pixelz {
         // make the NFT metadata JSON
         const metadata = await this.makeNFTMetadata(assetURI, options)
 
-        const content = JSON.stringify(metadata)
-
         const metadataURI = __dirname + `/${tokenId}-` + 'metadata.json'
-        await fsp.writeFile(metadataURI, content)
+        await fsp.writeFile(metadataURI, JSON.stringify(metadata))
 
         // get the address of the token owner from options, or use the default signing address if no owner is given
         let ownerAddress = options.owner
@@ -154,26 +152,48 @@ class Pixelz {
      * 
      * @returns {Promise<CreateNFTResult>}
      */
-         async createNFTFromAssetFile(filename, options) {
-            const content = await fsp.readFile(filename)
-            return this.createNFTFromAssetData(content, {...options, path: filename})
-        }
+    async createNFTFromAssetFile(filename, options) {
+        const content = await fsp.readFile(filename)
+        return this.createNFTFromAssetData(content, {...options, path: filename})
+    }
     
-        /**
-         * Helper to construct metadata JSON for 
-         * @param {string} assetCid - IPFS URI for the NFT asset
-         * @param {object} options
-         * @param {?string} name - optional name to set in NFT metadata
-         * @param {?string} description - optional description to store in NFT metadata
-         * @returns {object} - NFT metadata object
-         */
-        async makeNFTMetadata(assetURI, options) {
-            const {name, description} = options;
-            // assetURI = ensureIpfsUriPrefix(assetURI) //uncomment for IPFS
-            return {
-                name,
-                description,
-                image: assetURI
-            }
+    /**
+     * Helper to construct metadata JSON for 
+     * @param {string} assetCid - IPFS URI for the NFT asset
+     * @param {object} options
+     * @param {?string} name - optional name to set in NFT metadata
+     * @param {?string} description - optional description to store in NFT metadata
+     * @returns {object} - NFT metadata object
+     */
+    async makeNFTMetadata(assetURI, options) {
+        const {name, description} = options;
+        // assetURI = ensureIpfsUriPrefix(assetURI) //uncomment for IPFS
+        return {
+            name,
+            description,
+            image: assetURI
         }
+    }
+    // //////////////////////////////////////////////
+    // // --------- Smart contract interactions
+    // //////////////////////////////////////////////
+    
+    // purchasing Pixelz with max number of 20
+    async purchasePixelzNFT(num) {
+        if (num > 20 || num < 1) {
+            throw 'Number must be between 1 to 20 inclusive';
+        }
+        const tx = await this.contract.adoptPixelz(num)
+        const receipt = await tx.wait()
+        
+        for (const event of receipt.events) {
+            if (event.event !== 'Transfer') {
+                console.log('ignoring unknown event type ', event.event)
+                continue
+            }
+            return event.args.tokenId.toString()
+        }
+
+        throw new Error('unable to get token id')
+    }
 }
