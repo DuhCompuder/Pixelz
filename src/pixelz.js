@@ -105,8 +105,11 @@ class Pixelz {
         if (!fs.existsSync(__dirname)){
             fs.mkdirSync(__dirname);
         }
+        let tokenId;
+        //Mod this for multiples
+        tokenId = await this.contract.totalSupply()
         //Add data to Server
-        await fsp.writeFile(__dirname + `/${tokenId}`, content)
+        await fsp.writeFile(__dirname + `/${tokenId + 1}`, content)
         const filePath = options.path || 'asset.bin'
         const basename = path.basename(filePath)
         //location of nft image file
