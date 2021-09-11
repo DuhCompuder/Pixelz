@@ -11,7 +11,7 @@ const chalk = require('chalk')
 const colorize = require('json-colorizer')
 const config = require('getconfig')
 
-const pixelz = require('./pixelz')
+const { MakePixelz } = require('./pixelz')
 
 const {deployContract, saveDeploymentInfo} = require('./deploy')
 
@@ -66,15 +66,19 @@ async function main() {
 }
 // ---- additional command action functions
 async function startSale() {
+    const pixelz = await MakePixelz()
     console.log(`Starting the sale...`)
-    await pixelz.startSale();
-    
+    let status = await pixelz.startSale();
+    console.log(status)
 }
 async function stopSale() {
+    const pixelz = await MakePixelz()
     console.log(`Pausing the sale...`)
     await pixelz.pauseSale();
 }
 async function adoptPixelz() {
+    
+    const pixelz = await MakePixelz()
    
 }
 

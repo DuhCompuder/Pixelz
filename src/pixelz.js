@@ -126,7 +126,7 @@ class Pixelz {
         }
 
         // mint a new token referencing the metadata URI
-        const tokenId = await this.purchasePixelzNFT(ownerAddress, metadataURI)
+        tokenId = await this.purchasePixelzNFT(ownerAddress, metadataURI)
 
         // format and return the results
         return {
@@ -297,9 +297,12 @@ class Pixelz {
         await tx.wait()
     }
     async startSale() {
+        console.log("starting soon..")
         const tx = await this.contract.startSale();
-        await tx.wait()
-        //return "sale started"
+        const receipt = await tx.wait()
+        let status = await this.contract.hasSaleStarted();
+        console.log("status: ", status)
+        return receipt
     }
     async stopSale() {
         const tx = await this.contract.pauseSale();
@@ -313,4 +316,9 @@ class Pixelz {
         const tx = await this.contract.reserveGiveaway(num);
         await tx.wait()
     }
+}
+
+
+module.exports = {
+    MakePixelz,
 }

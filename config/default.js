@@ -12,7 +12,7 @@ const config = {
 
     // When the Minty smart contract is deployed, the contract address and other details will be written to this file.
     // Commands that interact with the smart contract (minting, etc), will load the file to connect to the deployed contract.
-    deploymentConfigFile: 'minty-deployment.json',
+    deploymentConfigFile: 'pixelz-deployment.json',
 
     // If you're running IPFS on a non-default port, update this URL. If you're using the IPFS defaults, you should be all set.
     ipfsApiUrl: 'http://localhost:5001',
