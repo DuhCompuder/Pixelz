@@ -24,7 +24,7 @@ main()
     process.exit(1);
   });
 
-  // const pixelz = await (await ethers.getContractFactory("Pixelz")).attach("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0")
+  // const pixelz = await (await ethers.getContractFactory("Pixelz")).attach("0x5fbdb2315678afecb367f032d93f642f64180aa3")
 
 //   'MAX_PIXELZ()': [Function (anonymous)],
 //   'METADATA_PROVENANCE_HASH()': [Function (anonymous)],

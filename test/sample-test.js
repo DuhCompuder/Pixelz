@@ -66,6 +66,24 @@ describe('Pixelz', function () {
     console.log("This pixelz nft's token URI: ", tokenURI)
     expect(user3Owned.toString()).to.equal('2');
   });
+  it('Let user adopt a Pixelz nft', async function () {
+    let saleStatus;
+    saleStatus = await contract.hasSaleStarted();
+    if (!saleStatus) {
+      await contract.startSale()
+      saleStatus = await contract.hasSaleStarted();
+    }
+    // console.log(saleStatus)
+    // let costOfPixelz = await contract.calculatePrice()
+    let numPurchased = 5;
+    await contract.connect(addr1).adoptPixelz(numPurchased);
+    
+    let user1Owned = await contract.balanceOf(addr1.address);
+    console.log("User 1 owns this pixelz nft: ", user1Owned)
+    let tokenURI = await contract.tokenURI(1);
+    console.log("This pixelz nft's token URI: ", tokenURI)
+    expect(user3Owned.toString()).to.equal('5');
+  });
 
   // try {
     

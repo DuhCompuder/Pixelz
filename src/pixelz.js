@@ -8,6 +8,7 @@ const all = require('it-all')
 const uint8ArrayConcat = require('uint8arrays/concat')
 const uint8ArrayToString = require('uint8arrays/to-string')
 const {BigNumber} = require('ethers')
+const web3Modal = require('web3modal')
 
 
 const { loadDeploymentInfo } = require('./deploy')
@@ -69,7 +70,27 @@ class Pixelz {
 
         this._initialized = true
     }
+    //////////////////////////////////////////////
+    // ------ Web3 Connect
+    //////////////////////////////////////////////
+    async waitForWallet() {
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
 
+        // const {abi, address} = this.deployInfo.contract
+        // const contract = new ethers.Contract(address, abi, signer)
+
+        // const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+        // const transaction = await contract.createMarketSale(nftaddress, nft.tokenId, {
+        //   value: price
+        // })
+        // await transaction.wait()
+
+        // return contract
+        return signer
+    }
 
     //////////////////////////////////////////////
     // ------ NFT Creation
@@ -210,10 +231,25 @@ class Pixelz {
 
     // purchasing Pixelz with max number of 20
     async purchasePixelzNFT(num) {
+        //need a connected provider
+        let signer = await this.waitForWallet()
         if (num > 20 || num < 1) {
             throw 'Number must be between 1 to 20 inclusive';
         }
-        const tx = await this.contract.adoptPixelz(num)
+        const totalPrice = 0;
+        let current = this.contract.totalSupply();
+        if (num > 1) {
+            for (i = 0; i < num; i++) {
+                totalPrice += this.contract.calculatePriceForToken(current)
+                current++ 
+            }
+        } else {
+            totalPrice = this.contract.calculatePrice()
+        }
+        console.log("Total Price: ", totalPrice);
+        const tx = await this.contract.connect(signer).adoptPixelz(num, {
+            value: ethers.utils.parseUnits(totalPrice.toString(), 'ether')
+        })
         const receipt = await tx.wait()
         
         for (const event of receipt.events) {
@@ -295,18 +331,21 @@ class Pixelz {
     async setBaseURI(baseURI) {
         const tx = await this.contract.setBaseURI(baseURI);
         await tx.wait()
+        let newBaseURI = await this.contract.baseURI();
+        return newBaseURI
     }
     async startSale() {
         console.log("starting soon..")
         const tx = await this.contract.startSale();
-        const receipt = await tx.wait()
+        await tx.wait()
         let status = await this.contract.hasSaleStarted();
-        console.log("status: ", status)
-        return receipt
+        return status
     }
     async stopSale() {
         const tx = await this.contract.pauseSale();
         await tx.wait()
+        let status = await this.contract.hasSaleStarted();
+        return status
     }
     async withdrawAll() {
         const tx = await this.contract.withdrawAll();
